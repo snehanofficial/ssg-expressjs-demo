@@ -25,7 +25,7 @@ db.connect(err => {
   }
 })
 
-app.post('/add_user', (req, res) => {
+app.post('/add-user', (req, res) => {
   const { name, email, password } = req.body;
   const sql = "INSERT INTO users (name,email,password) values (?,?,?)";
   db.query(sql, [name, email, password], (err, result) => {
@@ -40,7 +40,7 @@ app.post('/add_user', (req, res) => {
 });
 
 
-app.get('/list_users', (req, res) => {
+app.get('/list-users', (req, res) => {
   const sql = "SELECT * from users";
   db.query(sql, (err, result) => {
     if (err) {
@@ -53,7 +53,7 @@ app.get('/list_users', (req, res) => {
   })
 })
 
-app.put('/update_user/:id', (req, res) => {
+app.put('/update-user/:id', (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   const sql = "UPDATE users SET name=?, email=?, password=? WHERE id=?";
@@ -68,10 +68,54 @@ app.put('/update_user/:id', (req, res) => {
   })
 })
 
-app.delete('/delete_user/:id', (req, res) => {
+app.patch('/update-user-name/:id', (req, res) => {
   const { id } = req.params;
-  const sql =
-    "DELETE FROM users WHERE id=?";
+  const { name } = req.body;
+  const sql = "UPDATE users SET name=? WHERE id=?"
+  db.query(sql, [name, id], (err, result) => {
+    if (err) {
+      console.error('Error updating user name: ', err);
+      res.status(500).send('Error updating user name');
+    }
+    else {
+      res.status(200).send('User name updated successfully')
+    }
+  })
+});
+
+app.patch('/update-user-email/:id', (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+  const sql = "UPDATE users SET email=? WHERE id=?"
+  db.query(sql, [email, id], (err, result) => {
+    if (err) {
+      console.error('Error updating user email: ', err);
+      res.status(500).send('Error updating user email');
+    }
+    else {
+      res.status(200).send('User email updated successfully')
+    }
+  })
+});
+
+app.patch('/update-user-password/:id', (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+  const sql = "UPDATE users SET password=? WHERE id=?"
+  db.query(sql, [password, id], (err, result) => {
+    if (err) {
+      console.error('Error updating user password: ', err);
+      res.status(500).send('Error updating user password');
+    }
+    else {
+      res.status(200).send('User password updated successfully')
+    }
+  })
+});
+
+app.delete('/delete-user/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM users WHERE id=?";
   db.query(sql, [id], (err, result) => {
     if (err) {
       console.error('Error deleting User:', err);
